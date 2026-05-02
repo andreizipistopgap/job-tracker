@@ -22,4 +22,8 @@ public:
     std::optional<JobApplication> getApplicationById(int id) {
         return repository.getApplicationById(id);
     }
+
+    std::optional<JobApplication> deleteApplicationById(int id) {
+        return repository.deleteApplicationById(id);
+    }
 };

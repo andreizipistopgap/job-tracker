@@ -43,3 +43,17 @@ void ApplicationsController::create(const HttpRequestPtr& req, std::function<voi
     auto resp = HttpResponse::newHttpJsonResponse(created.toJson());
     callback(resp);
 }
+
+void ApplicationsController::deleteById(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback, int id) {
+    std::optional<JobApplication> result = service.deleteApplicationById(id);
+
+    if (result) {
+        auto resp = HttpResponse::newHttpJsonResponse(result.value().toJson());
+        callback(resp);
+    } else {
+        auto resp = HttpResponse::newHttpResponse();
+        resp->setStatusCode(k404NotFound);
+        resp->setBody("Application not found");
+        callback(resp);
+    }
+}

@@ -29,4 +29,15 @@ public:
         }
         return std::nullopt;
     }
+
+    std::optional<JobApplication> deleteApplicationById(int id) {
+        for (int i = 0; i < applications.size(); i++) {
+            if (applications[i].id == id) {
+                JobApplication copy = applications[i];
+                applications.erase(applications.begin() + i);
+                return copy;
+            }
+        }
+        return std::nullopt;
+    }
 };
