@@ -40,4 +40,15 @@ public:
         }
         return std::nullopt;
     }
+
+    std::optional<JobApplication> updateApplicationById(int id, JobApplication app) {
+        for (auto &a : applications) {
+            if (a.id == id) {
+                a.company = app.company;
+                a.position = app.position;
+                return a;
+            }
+        }
+        return std::nullopt;
+    }
 };

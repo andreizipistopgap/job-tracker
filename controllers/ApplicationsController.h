@@ -15,6 +15,8 @@ class ApplicationsController : public drogon::HttpController<ApplicationsControl
 
     void deleteById(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback, int id);
 
+    void updateById(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback, int id);
+
     METHOD_LIST_BEGIN
     // list path definitions here;
     // PATH_ADD("/path", "filter1", "filter2", HttpMethod1, HttpMethod2...);
@@ -22,5 +24,6 @@ class ApplicationsController : public drogon::HttpController<ApplicationsControl
     ADD_METHOD_TO(ApplicationsController::create, "/applications", Post);
     ADD_METHOD_TO(ApplicationsController::getById, "/applications/{1}", Get);
     ADD_METHOD_TO(ApplicationsController::deleteById, "/applications/{1}", Delete);
+    ADD_METHOD_TO(ApplicationsController::updateById, "/applications/{1}", Put);
     METHOD_LIST_END
 };
