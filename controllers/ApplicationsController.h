@@ -1,17 +1,23 @@
 #pragma once
 
-#include <drogon/HttpSimpleController.h>
+#include <drogon/HttpController.h>
 
 using namespace drogon;
 
-class ApplicationsController : public drogon::HttpSimpleController<ApplicationsController>
+class ApplicationsController : public drogon::HttpController<ApplicationsController>
 {
   public:
-    void asyncHandleHttpRequest(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) override;
-    PATH_LIST_BEGIN
+    void getAll(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback);
+
+    void getById(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback, int id);
+
+    void create(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback);
+
+    METHOD_LIST_BEGIN
     // list path definitions here;
     // PATH_ADD("/path", "filter1", "filter2", HttpMethod1, HttpMethod2...);
-    PATH_ADD("/applications", Get, Post);
-    PATH_ADD("/applications/{1}", Get);
-    PATH_LIST_END
+    ADD_METHOD_TO(ApplicationsController::getAll, "/applications", Get);
+    ADD_METHOD_TO(ApplicationsController::create, "/applications", Post);
+    ADD_METHOD_TO(ApplicationsController::getById, "/applications/{1}", Get);
+    METHOD_LIST_END
 };

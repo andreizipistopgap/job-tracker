@@ -3,6 +3,7 @@
 #include "../models/JobApplication.h"
 #include "../repositories/JobApplicationRepository.h"
 #include <vector>
+#include <optional>
 
 class JobApplicationService {
 private:
@@ -16,5 +17,9 @@ public:
 
     JobApplication addApplication(JobApplication app) {
         return repository.addApplication(app);
+    }
+
+    std::optional<JobApplication> getApplicationById(int id) {
+        return repository.getApplicationById(id);
     }
 };
