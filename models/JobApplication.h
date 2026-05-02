@@ -26,4 +26,11 @@ public:
         this->position = position;
         this->status = status;
     }
+
+    JobApplication(std::string company, std::string position) {
+        this->id = 0;
+        this->company = company;
+        this->position = position;
+        this->status = "Pending";
+    }
 };

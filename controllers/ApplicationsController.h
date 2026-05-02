@@ -11,6 +11,7 @@ class ApplicationsController : public drogon::HttpSimpleController<ApplicationsC
     PATH_LIST_BEGIN
     // list path definitions here;
     // PATH_ADD("/path", "filter1", "filter2", HttpMethod1, HttpMethod2...);
-    PATH_ADD("/applications", Get);
+    PATH_ADD("/applications", Get, Post);
+    PATH_ADD("/applications/{1}", Get);
     PATH_LIST_END
 };

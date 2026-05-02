@@ -5,10 +5,16 @@
 #include <vector>
 
 class JobApplicationService {
+private:
+    JobApplicationRepository repository;
+
 public:
 
     std::vector<JobApplication> getAllApplications() {
-        JobApplicationRepository repository;
         return repository.getAllApplications();
+    }
+
+    JobApplication addApplication(JobApplication app) {
+        return repository.addApplication(app);
     }
 };

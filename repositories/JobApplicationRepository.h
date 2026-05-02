@@ -4,16 +4,21 @@
 #include <vector>
 
 class JobApplicationRepository {
+private:
+    std::vector<JobApplication> applications;
+    int nextId = 1;
+
 public:
 
     std::vector<JobApplication> getAllApplications() {
-        JobApplication a1(1, "Microsoft", "SWE1", "Pending");
-        JobApplication a2(2, "Amazon", "SWE2", "Hired");
-
-        std::vector<JobApplication> applications;
-        applications.push_back(a1);
-        applications.push_back(a2);
-
         return applications;
+    }
+
+    JobApplication addApplication(JobApplication app) {
+        app.id = nextId;
+        nextId++;
+
+        applications.push_back(app);
+        return app;
     }
 };
