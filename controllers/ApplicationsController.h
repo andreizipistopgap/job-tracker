@@ -1,11 +1,15 @@
 #pragma once
 
 #include <drogon/HttpController.h>
+#include "../services/JobApplicationService.h"
 
 using namespace drogon;
 
 class ApplicationsController : public drogon::HttpController<ApplicationsController>
 {
+  private:
+    JobApplicationService service;
+
   public:
     void getAll(const HttpRequestPtr& req, std::function<void(const HttpResponsePtr&)>&& callback);
 

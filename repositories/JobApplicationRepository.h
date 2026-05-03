@@ -1,54 +1,113 @@
 #pragma once
 
+#include <drogon/drogon.h>
+#include <drogon/orm/DbClient.h>
 #include "../models/JobApplication.h"
 #include <vector>
 #include <optional>
 
 class JobApplicationRepository {
 private:
-    std::vector<JobApplication> applications;
+    // std::vector<JobApplication> applications;
     int nextId = 1;
 
 public:
 
     std::vector<JobApplication> getAllApplications() {
+        auto client = drogon::app().getDbClient();
+        auto result = client->execSqlSync(
+            "SELECT id, company, position, status FROM applications"
+        );
+        std::vector<JobApplication> applications;
+
+        for (const auto& row : result) {
+            int id = row["id"].as<int>();
+            std::string company = row["company"].as<std::string>();
+            std::string position = row["position"].as<std::string>();
+            std::string status = row["status"].as<std::string>();
+
+            JobApplication app(id, company, position, status);
+            applications.push_back(app);
+        }
         return applications;
     }
 
     JobApplication addApplication(JobApplication app) {
-        app.id = nextId;
-        nextId++;
+        auto client = drogon::app().getDbClient();
+        auto result = client->execSqlSync(
+            "INSERT INTO applications (company, position, status) "
+            "VALUES (?, ?, ?)",
+            app.company,
+            app.position,
+            app.status
+        );
 
-        applications.push_back(app);
+        auto idResult = client->execSqlSync("SELECT last_insert_rowid()");
+        int id = idResult[0][0].as<int>();
+        app.id = id;
+
         return app;
     }
 
     std::optional<JobApplication> getApplicationById(int id) {
-        for (const auto &a : applications) {
-            if (a.id == id) return a;
+        auto client = drogon::app().getDbClient();
+        auto result = client->execSqlSync(
+            "SELECT id, company, position, status "
+            "FROM applications "
+            "WHERE id = ?",
+            id
+        );
+
+        if (result.empty()) {
+            return std::nullopt;
         }
-        return std::nullopt;
+
+        const auto& row = result[0];
+        int dbId = row["id"].as<int>();
+        std::string company = row["company"].as<std::string>();
+        std::string position = row["position"].as<std::string>();
+        std::string status = row["status"].as<std::string>();
+
+        JobApplication app(dbId, company, position, status);
+        return app;
     }
 
     std::optional<JobApplication> deleteApplicationById(int id) {
-        for (int i = 0; i < applications.size(); i++) {
-            if (applications[i].id == id) {
-                JobApplication copy = applications[i];
-                applications.erase(applications.begin() + i);
-                return copy;
-            }
+        auto client = drogon::app().getDbClient();
+        auto app = getApplicationById(id);
+
+        if (!app) {
+            return std::nullopt;
         }
-        return std::nullopt;
+
+        auto result = client->execSqlSync(
+            "DELETE FROM applications "
+            "WHERE id = ?",
+            id
+        );
+
+        return app;
     }
 
     std::optional<JobApplication> updateApplicationById(int id, JobApplication app) {
-        for (auto &a : applications) {
-            if (a.id == id) {
-                a.company = app.company;
-                a.position = app.position;
-                return a;
-            }
+        auto client = drogon::app().getDbClient();
+
+        auto res = getApplicationById(id);
+
+        if (!res) {
+            return std::nullopt;
         }
-        return std::nullopt;
+
+        auto result = client->execSqlSync(
+            "UPDATE applications "
+            "SET company = ?, position = ?, status = ? "
+            "WHERE id = ?",
+            app.company,
+            app.position,
+            app.status,
+            id
+        );
+
+        return getApplicationById(id);
     }
 };

@@ -2,7 +2,6 @@
 #include "../models/JobApplication.h"
 #include "../services/JobApplicationService.h"
 #include <vector>
-static JobApplicationService service;
 
 void ApplicationsController::getAll(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback) {
     std::vector<JobApplication> applications = service.getAllApplications();
